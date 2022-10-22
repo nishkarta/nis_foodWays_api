@@ -37,7 +37,7 @@ func (h *handlerUser) FindUsers(w http.ResponseWriter, r *http.Request) {
 	}
 
 	for i, p := range users {
-		users[i].Image = path_file + p.Image
+		users[i].Image = os.Getenv("PATH_FILE") + p.Image
 	}
 
 	w.WriteHeader(http.StatusOK)
@@ -70,14 +70,6 @@ func (h *handlerUser) CreateUser(w http.ResponseWriter, r *http.Request) {
 
 	dataContex := r.Context().Value("dataFile")
 	filename := dataContex.(string)
-
-	// request := new(usersdto.CreateUserRequest)
-	// if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
-	// 	w.WriteHeader(http.StatusBadRequest)
-	// 	response := dto.ErrorResult{Code: http.StatusBadRequest, Message: err.Error()}
-	// 	json.NewEncoder(w).Encode(response)
-	// 	return
-	// }
 
 	request := usersdto.CreateUserRequest{
 		FullName: r.FormValue("fullName"),
@@ -136,14 +128,6 @@ func (h *handlerUser) UpdateUser(w http.ResponseWriter, r *http.Request) {
 
 	dataContex := r.Context().Value("dataFile")
 	filename := dataContex.(string)
-
-	// request := new(usersdto.UpdateUserRequest)
-	// if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
-	// 	w.WriteHeader(http.StatusBadRequest)
-	// 	response := dto.ErrorResult{Code: http.StatusBadRequest, Message: err.Error()}
-	// 	json.NewEncoder(w).Encode(response)
-	// 	return
-	// }
 
 	request := usersdto.UpdateUserRequest{
 		FullName: r.FormValue("fullName"),
@@ -252,17 +236,3 @@ func convertResponse(u models.User) usersdto.UserResponse {
 		Gender:   u.Gender,
 	}
 }
-
-// func convertCreateResponse(u models.User) usersdto.CreateUserResponse {
-// 	return usersdto.CreateUserResponse{
-// 		ID:       u.ID,
-// 		FullName: u.FullName,
-// 		Email:    u.Email,
-// 		Phone:    u.Phone,
-// 		Location: u.Location,
-// 		Image:    u.Image,
-// 		Role:     u.Role,
-// 		// Password: u.Password,
-// 		// Gender:   u.Gender,
-// 	}
-// }
