@@ -71,8 +71,26 @@ func (h *handlerAuth) Register(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(response)
 	}
 
+	//generate token
+	claims := jwt.MapClaims{}
+	claims["id"] = user.ID
+	claims["exp"] = time.Now().Add(time.Hour * 2).Unix() // 2 jam expired
+
+	token, errGenerateToken := jwtToken.GenerateToken(&claims)
+	if errGenerateToken != nil {
+		log.Println(errGenerateToken)
+		fmt.Println("Unauthorize")
+		return
+	}
+
+	registerResponse := authdto.RegisterResponse{
+		FullName: data.FullName,
+		Role:     data.Role,
+		Token:    token,
+	}
+
 	w.WriteHeader(http.StatusOK)
-	response := dto.SuccessResult{Code: "success", Data: data}
+	response := dto.SuccessResult{Code: "success", Data: registerResponse}
 	json.NewEncoder(w).Encode(response)
 }
 

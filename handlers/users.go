@@ -82,10 +82,11 @@ func (h *handlerUser) CreateUser(w http.ResponseWriter, r *http.Request) {
 	request := usersdto.CreateUserRequest{
 		FullName: r.FormValue("fullName"),
 		Email:    r.FormValue("email"),
-		Password: r.FormValue("password"),
 		Phone:    r.FormValue("phone"),
-		Gender:   r.FormValue("gender"),
 		Location: r.FormValue("location"),
+		Image:    r.FormValue("image"),
+		Password: r.FormValue("password"),
+		Gender:   r.FormValue("gender"),
 		Role:     r.FormValue("role"),
 	}
 
@@ -144,13 +145,14 @@ func (h *handlerUser) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	// 	return
 	// }
 
-	request := usersdto.CreateUserRequest{
+	request := usersdto.UpdateUserRequest{
 		FullName: r.FormValue("fullName"),
 		Email:    r.FormValue("email"),
 		Password: r.FormValue("password"),
 		Phone:    r.FormValue("phone"),
 		Gender:   r.FormValue("gender"),
 		Location: r.FormValue("location"),
+		Image:    filename,
 		Role:     r.FormValue("role"),
 	}
 
@@ -191,7 +193,7 @@ func (h *handlerUser) UpdateUser(w http.ResponseWriter, r *http.Request) {
 		user.Location = request.Location
 	}
 	if request.Image != "" {
-		user.Image = filename
+		user.Image = request.Image
 	}
 	if request.Role != "" {
 		user.Role = request.Role
@@ -204,6 +206,8 @@ func (h *handlerUser) UpdateUser(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(response)
 		return
 	}
+
+	user, _ = h.UserRepository.GetUser(user.ID)
 
 	w.WriteHeader(http.StatusOK)
 	response := dto.SuccessResult{Code: "success", Data: convertResponse(data)}
@@ -240,11 +244,25 @@ func convertResponse(u models.User) usersdto.UserResponse {
 		ID:       u.ID,
 		FullName: u.FullName,
 		Email:    u.Email,
-		Password: u.Password,
-		Image:    u.Image,
-		Gender:   u.Gender,
-		Location: u.Location,
 		Phone:    u.Phone,
+		Location: u.Location,
+		Image:    u.Image,
 		Role:     u.Role,
+		Password: u.Password,
+		Gender:   u.Gender,
 	}
 }
+
+// func convertCreateResponse(u models.User) usersdto.CreateUserResponse {
+// 	return usersdto.CreateUserResponse{
+// 		ID:       u.ID,
+// 		FullName: u.FullName,
+// 		Email:    u.Email,
+// 		Phone:    u.Phone,
+// 		Location: u.Location,
+// 		Image:    u.Image,
+// 		Role:     u.Role,
+// 		// Password: u.Password,
+// 		// Gender:   u.Gender,
+// 	}
+// }
