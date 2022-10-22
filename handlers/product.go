@@ -98,9 +98,10 @@ func (h *handlerProduct) CreateProduct(w http.ResponseWriter, r *http.Request) {
 	price, _ := strconv.Atoi(r.FormValue("price"))
 	qty, _ := strconv.Atoi(r.FormValue("qty"))
 	request := productdto.ProductRequest{
-		Title: r.FormValue("title"),
-		Price: price,
-		Qty:   qty,
+		Title:  r.FormValue("title"),
+		Price:  price,
+		Qty:    qty,
+		UserID: userId,
 	}
 
 	validation := validator.New()
