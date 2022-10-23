@@ -120,9 +120,9 @@ func (h *handlerTransaction) UpdateTransaction(w http.ResponseWriter, r *http.Re
 
 	transaction.ID = id
 
-	if request.UserOrderID != 0 {
-		transaction.UserOrderID = request.UserOrderID
-	}
+	// if request.UserOrderID != 0 {
+	// 	transaction.UserOrderID = request.UserOrderID
+	// }
 	if request.Status != "" {
 		transaction.Status = request.Status
 	}
@@ -143,7 +143,7 @@ func (h *handlerTransaction) UpdateTransaction(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	// transaction, _ = h.TransactionRepository.GetTransactionByID(transaction.ID)
+	transaction, _ = h.TransactionRepository.GetTransactionByID(transaction.ID)
 
 	w.WriteHeader(http.StatusOK)
 	response := dto.SuccessResult{Code: "success", Data: data}
@@ -182,6 +182,7 @@ func convertResponseTransaction(u models.Transaction) models.TransactionResponse
 		UserOrder: u.UserOrder,
 		Status:    u.Status,
 		Order:     u.Order,
+		Qty:       u.Qty,
 	}
 }
 

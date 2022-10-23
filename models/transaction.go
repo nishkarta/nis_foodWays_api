@@ -21,6 +21,7 @@ type TransactionResponse struct {
 	Status      string            `json:"status"`
 	OrderID     int               `json:"-"`
 	Order       OrderResponse     `json:"order"`
+	Qty         int               `json:"qty"`
 }
 type TransactionUserResponse struct {
 	ID          int               `json:"id"`

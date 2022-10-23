@@ -39,7 +39,8 @@ func (r *repository) AddTransaction(transaction models.Transaction) (models.Tran
 }
 
 func (r *repository) UpdateTransaction(transaction models.Transaction, ID int) (models.Transaction, error) {
-	err := r.db.Save(&transaction).Error
+	// err := r.db.Save(&transaction).Error
+	err := r.db.Model(&transaction).Where("id=?", ID).Updates(&transaction).Error
 
 	return transaction, err
 }
