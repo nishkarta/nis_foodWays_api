@@ -143,8 +143,6 @@ func (h *handlerTransaction) UpdateTransaction(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	transaction, _ = h.TransactionRepository.GetTransactionByID(transaction.ID)
-
 	w.WriteHeader(http.StatusOK)
 	response := dto.SuccessResult{Code: "success", Data: data}
 	json.NewEncoder(w).Encode(response)

@@ -9,6 +9,7 @@ import (
 type ProductRepository interface {
 	FindProducts() ([]models.Product, error)
 	GetProductByProductID(ID int) (models.Product, error)
+	GetProductByPartner(userID int) ([]models.Product, error)
 	CreateProduct(product models.Product) (models.Product, error)
 	UpdateProduct(product models.Product) (models.Product, error)
 	DeleteProduct(product models.Product) (models.Product, error)
@@ -30,6 +31,13 @@ func (r *repository) GetProductByProductID(ID int) (models.Product, error) {
 	err := r.db.Preload("User").First(&product, ID).Error
 
 	return product, err
+}
+
+func (r *repository) GetProductByPartner(userID int) ([]models.Product, error) {
+	var products []models.Product
+	err := r.db.Preload("User").Where("user_id = ?", userID).Find(&products).Error
+
+	return products, err
 }
 
 func (r *repository) CreateProduct(product models.Product) (models.Product, error) {

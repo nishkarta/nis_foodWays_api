@@ -65,6 +65,28 @@ func (h *handlerProduct) GetProductByProductID(w http.ResponseWriter, r *http.Re
 	json.NewEncoder(w).Encode(response)
 }
 
+func (h *handlerProduct) GetProductByPartner(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	id, _ := strconv.Atoi(mux.Vars(r)["userId"])
+
+	var products []models.Product
+	products, err := h.ProductRepository.GetProductByPartner(id)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		response := dto.ErrorResult{Code: http.StatusBadRequest, Message: err.Error()}
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	for i, p := range products {
+		products[i].Image = os.Getenv("PATH_FILE") + p.Image
+	}
+
+	w.WriteHeader(http.StatusOK)
+	response := dto.SuccessResult{Code: "success", Data: products}
+	json.NewEncoder(w).Encode(response)
+}
+
 func (h *handlerProduct) CreateProduct(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
@@ -108,6 +130,7 @@ func (h *handlerProduct) CreateProduct(w http.ResponseWriter, r *http.Request) {
 	}
 
 	product, _ = h.ProductRepository.GetProductByProductID(product.ID)
+	product.Image = os.Getenv("PATH_FILE") + product.Image
 
 	w.WriteHeader(http.StatusOK)
 	response := dto.SuccessResult{Code: "success", Data: product}

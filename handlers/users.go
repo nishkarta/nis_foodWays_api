@@ -19,8 +19,6 @@ type handlerUser struct {
 	UserRepository repositories.UserRepository
 }
 
-// var path_file = "http://localhost:5000/uploads/"
-
 func HandlerUser(UserRepository repositories.UserRepository) *handlerUser {
 	return &handlerUser{UserRepository}
 }
@@ -208,8 +206,6 @@ func (h *handlerUser) UpdateUser(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(response)
 		return
 	}
-
-	user, _ = h.UserRepository.GetUser(user.ID)
 
 	w.WriteHeader(http.StatusOK)
 	response := dto.SuccessResult{Code: "success", Data: convertResponse(data)}
