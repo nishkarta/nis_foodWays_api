@@ -65,6 +65,24 @@ func (h *handlerUser) GetUser(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response)
 }
 
+func (h *handlerUser) GetRestosProduct(w http.ResponseWriter, r *http.Request) {
+	id, _ := strconv.Atoi(mux.Vars(r)["id"])
+
+	user, err := h.UserRepository.GetUser(id)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		response := dto.ErrorResult{Code: http.StatusBadRequest, Message: err.Error()}
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	user.Image = os.Getenv("PATH_FILE") + user.Image
+
+	w.WriteHeader(http.StatusOK)
+	response := dto.SuccessResult{Code: "success", Data: convertRestoProduct(user)}
+	json.NewEncoder(w).Encode(response)
+}
+
 func (h *handlerUser) CreateUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
@@ -234,5 +252,11 @@ func convertResponse(u models.User) usersdto.UserResponse {
 		Role:     u.Role,
 		Password: u.Password,
 		Gender:   u.Gender,
+	}
+}
+
+func convertRestoProduct(u models.User) models.RestosResponse {
+	return models.RestosResponse{
+		ProductUserResponse: u.Products,
 	}
 }

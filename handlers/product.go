@@ -19,8 +19,6 @@ type handlerProduct struct {
 	ProductRepository repositories.ProductRepository
 }
 
-// var path_file = "http://localhost:5000/uploads/"
-
 func HandlerProduct(ProductRepository repositories.ProductRepository) *handlerProduct {
 	return &handlerProduct{ProductRepository}
 }
@@ -67,25 +65,6 @@ func (h *handlerProduct) GetProductByProductID(w http.ResponseWriter, r *http.Re
 	json.NewEncoder(w).Encode(response)
 }
 
-// func (h *handlerProduct) GetProductByResto(w http.ResponseWriter, r *http.Request) {
-// 	w.Header().Set("Content-Type", "application/json")
-
-// 	userid, _ := strconv.Atoi(mux.Vars(r)["userid"])
-
-// 	var product models.Product
-// 	product, err := h.ProductRepository.GetProductByResto(id)
-// 	if err != nil {
-// 		w.WriteHeader(http.StatusInternalServerError)
-// 		response := dto.ErrorResult{Code: http.StatusBadRequest, Message: err.Error()}
-// 		json.NewEncoder(w).Encode(response)
-// 		return
-// 	}
-
-// 	w.WriteHeader(http.StatusOK)
-// 	response := dto.SuccessResult{Code: "success", Data: convertResponseProduct(product)}
-// 	json.NewEncoder(w).Encode(response)
-// }
-
 func (h *handlerProduct) CreateProduct(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
@@ -98,10 +77,9 @@ func (h *handlerProduct) CreateProduct(w http.ResponseWriter, r *http.Request) {
 	price, _ := strconv.Atoi(r.FormValue("price"))
 	qty, _ := strconv.Atoi(r.FormValue("qty"))
 	request := productdto.ProductRequest{
-		Title:  r.FormValue("title"),
-		Price:  price,
-		Qty:    qty,
-		UserID: userId,
+		Title: r.FormValue("title"),
+		Price: price,
+		Qty:   qty,
 	}
 
 	validation := validator.New()
@@ -138,9 +116,6 @@ func (h *handlerProduct) CreateProduct(w http.ResponseWriter, r *http.Request) {
 
 func (h *handlerProduct) UpdateProduct(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-
-	// userInfo := r.Context().Value("userInfo").(jwt.MapClaims)
-	// userId := int(userInfo["id"].(float64))
 
 	dataContex := r.Context().Value("dataFile")
 	filename := dataContex.(string)

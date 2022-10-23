@@ -9,6 +9,7 @@ import (
 type UserRepository interface {
 	FindUsers() ([]models.User, error)
 	GetUser(ID int) (models.User, error)
+	GetRestosProduct(ID int) (models.User, error)
 	CreateUser(user models.User) (models.User, error)
 	UpdateUser(user models.User) (models.User, error)
 	DeleteUser(user models.User) (models.User, error)
@@ -20,12 +21,18 @@ func RepositoryUser(db *gorm.DB) *repository {
 
 func (r *repository) FindUsers() ([]models.User, error) {
 	var users []models.User
-	err := r.db.Preload("Products").Find(&users).Error
+	err := r.db.Preload("Products").Preload("Transactions").Find(&users).Error
 
 	return users, err
 }
 
 func (r *repository) GetUser(ID int) (models.User, error) {
+	var user models.User
+	err := r.db.Preload("Products").Preload("Transactions").First(&user, ID).Error
+
+	return user, err
+}
+func (r *repository) GetRestosProduct(ID int) (models.User, error) {
 	var user models.User
 	err := r.db.Preload("Products").First(&user, ID).Error
 
